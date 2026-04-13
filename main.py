@@ -21,10 +21,12 @@ app.add_middleware(
 allow_origins=[
     "http://localhost:4200",
     "https://nikitina-elizaveta.github.io",
-    "https://cookies-backend-0s6p.onrender.com"   # можно добавить для надёжности
-],    allow_credentials=True,
+    "https://cookies-backend-0s6p.onrender.com",
+    "https://nikitina-elizaveta-candy-shop-b1c6.twc1.net" 
+],
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 class FilterEvent(BaseModel):
