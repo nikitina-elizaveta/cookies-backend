@@ -19,7 +19,7 @@ app = FastAPI()
 # Разрешаем CORS для фронтенда на localhost:4200
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # или можно "*" для всех (не рекомендуется для продакшена)
+    allow_origins=["http://localhost:4200","https://ваш-логин.github.io", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
