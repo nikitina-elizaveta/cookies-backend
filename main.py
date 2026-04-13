@@ -57,7 +57,7 @@ def get_products(
     no_dairy: bool = False,
     vegan: bool = False,
     no_aroma: bool = False,
-    sort: Optional[str] = Query(None, regex="^(price_asc|price_desc)$")
+    sort: Optional[str] = Query(None, pattern="^(price_asc|price_desc)$")
 ):
     # Диагностика
     print("=== DEBUG ===")
