@@ -18,8 +18,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+allow_origins=[
+    "http://localhost:4200",
+    "https://nikitina-elizaveta.github.io",
+    "https://cookies-backend-0s6p.onrender.com"   # можно добавить для надёжности
+],    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
