@@ -16,14 +16,14 @@ class AdminLogin(BaseModel):
 
 app = FastAPI()
 
-# Разрешаем CORS для фронтенда на localhost:4200
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200","https://ваш-логин.github.io", "*"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 class FilterEvent(BaseModel):
     session_id: str
     filters: dict
@@ -43,6 +43,12 @@ class OrderRequest(BaseModel):
     customer_phone: str
     comment: Optional[str] = None
     items: List[OrderItem]
+
+from fastapi import Response
+
+@app.options("/{path:path}")
+async def options_handler():
+    return Response(status_code=200)
 
 @app.get("/")
 def root():
