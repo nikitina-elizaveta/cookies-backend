@@ -22,7 +22,7 @@ allow_origins=[
     "http://localhost:4200",
     "https://nikitina-elizaveta.github.io",
     "https://cookies-backend-0s6p.onrender.com",
-    "https://nikitina-elizaveta-candy-shop-b1c6.twc1.net" 
+    "https://nikitina-elizaveta-candy-shop-98c6.twc1.net" 
 ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -213,10 +213,6 @@ def get_order_details(sale_id: int):
         "order": dict(order),
         "items": [dict(i) for i in items]
     }
-
-
-
-
 @app.get("/api/admin/analytics/popular-products", dependencies=[Depends(verify_admin_token)])
 def popular_products(start_date: Optional[str] = None, end_date: Optional[str] = None):
     conn = get_db()
