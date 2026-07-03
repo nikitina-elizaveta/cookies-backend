@@ -59,15 +59,24 @@ async def options_handler():
 @app.get("/")
 def root():
     return {"message": "Candy Shop API"}
-@app.get("/api/seed")
-def run_seed():
+
+
+@app.get("/api/seed-force")
+def seed_force():
     try:
-        # Импортируем наш скрипт p.py
         import p
+        conn = get_db()
+        # Удаляем все заказы за апрель, май, июнь 2026
+        conn.execute("DELETE FROM Magazine_Sales WHERE id_sale IN (SELECT id_sale FROM Sale WHERE date_sale LIKE '2026-04%' OR date_sale LIKE '2026-05%' OR date_sale LIKE '2026-06%')")
+        conn.execute("DELETE FROM Sale WHERE date_sale LIKE '2026-04%' OR date_sale LIKE '2026-05%' OR date_sale LIKE '2026-06%'")
+        conn.commit()
+        conn.close()
+        # Теперь запускаем seed
         result = p.seed()
-        return result
+        return {"status": "ok", "message": "Старые данные удалены, новые добавлены", "result": result}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
 @app.get("/api/products")
 def get_products(
     occasions: Optional[str] = Query(None),
