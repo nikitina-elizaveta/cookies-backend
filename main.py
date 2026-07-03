@@ -417,16 +417,35 @@ def create_order(order: OrderRequest):
     conn = get_db()
     try:
         conn.execute("BEGIN")
-        # Вставляем покупателя
+                # Нормализуем телефон: убираем '+' и пробелы
+        phone = order.customer_phone.replace('+', '').replace(' ', '')
+        # Проверяем, есть ли уже клиент с таким номером
         cursor = conn.execute(
-            "INSERT INTO Customers (name, phone) VALUES (?, ?) RETURNING id_customer",
-            (order.customer_name, order.customer_phone)
+            "SELECT id_customer FROM Customers WHERE phone = ?",
+            (phone,)
         )
         customer_row = cursor.fetchone()
-        if customer_row is None:
-            raise Exception("Не удалось создать покупателя")
-        customer_id = customer_row["id_customer"]
-        print("customer_id:", customer_id)
+        if customer_row:
+            customer_id = customer_row["id_customer"]
+            # Если имя изменилось — обновим
+            if order.customer_name:
+                conn.execute(
+                    "UPDATE Customers SET name = ? WHERE id_customer = ?",
+                    (order.customer_name, customer_id)
+                )
+            print(f"Найден существующий клиент: {customer_id}")
+        else:
+            # Создаём нового покупателя
+            cursor = conn.execute(
+                "INSERT INTO Customers (name, phone) VALUES (?, ?) RETURNING id_customer",
+                (order.customer_name, phone)
+            )
+            customer_row = cursor.fetchone()
+            if customer_row is None:
+                raise Exception("Не удалось создать покупателя")
+            customer_id = customer_row["id_customer"]
+            print(f"Создан новый клиент: {customer_id}")
+
 
         # Создаём запись о продаже с комментарием
         cursor = conn.execute(
