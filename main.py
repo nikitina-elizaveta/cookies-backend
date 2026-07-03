@@ -51,6 +51,7 @@ class OrderRequest(BaseModel):
 
 from fastapi import Response
 
+
 @app.options("/{path:path}")
 async def options_handler():
     return Response(status_code=200)
@@ -58,7 +59,15 @@ async def options_handler():
 @app.get("/")
 def root():
     return {"message": "Candy Shop API"}
-
+@app.get("/api/seed")
+def run_seed():
+    try:
+        # Импортируем наш скрипт p.py
+        import p
+        result = p.seed()
+        return result
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 @app.get("/api/products")
 def get_products(
     occasions: Optional[str] = Query(None),
@@ -782,6 +791,7 @@ def unpopular_products_range(limit: int = 5, start_date: Optional[str] = None, e
     data = conn.execute(query, params).fetchall()
     conn.close()
     return [dict(row) for row in data]
+
 
 @app.get("/api/admin/analytics/filter-stats-range", dependencies=[Depends(verify_admin_token)])
 def filter_stats_range(start_date: Optional[str] = None, end_date: Optional[str] = None):
